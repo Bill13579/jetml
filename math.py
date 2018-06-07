@@ -2,6 +2,9 @@ import numpy as np
 
 LEAKY_RELU_A = 0.01
 
+def identity(x):
+    return x
+
 def sigmoid(x):
     return 1/(1 + np.exp(-x))
 

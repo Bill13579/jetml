@@ -1,9 +1,24 @@
 import numpy as np
 import jetml.math as Math
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
-np.seterr(all="raise")
+
 class NeuralNetwork:
-    def __init__(self, layers, activation_functions="relu"):
+    ACTIVATION_FUNCTIONS = {
+        "relu": {
+            "_": Math.relu,
+            "derivative": Math.relu_p
+        },
+        "leaky-relu": {
+            "_": Math.leaky_relu,
+            "derivative": Math.leaky_relu_p
+        },
+        "sigmoid": {
+            "_": Math.sigmoid,
+            "derivative": Math.sigmoid_p
+        }
+    }
+
+    def __init__(self, layers, activation_functions=("relu", "sigmoid")):
         if len(layers) < 2:
             raise self.InitializationException("A feedforward neural network has to have at least 2 layers")
         self.layers = layers
@@ -13,11 +28,8 @@ class NeuralNetwork:
     def __verify_activation_function(self, activation_functions):
         for i in range(len(activation_functions)):
             af = activation_functions[i]
-            if af not in ("identity", "relu", "leaky-relu", "sigmoid"):
+            if af not in NeuralNetwork.ACTIVATION_FUNCTIONS.keys() and af != "identity":
                 raise Exception("Unknown activation function \"" + af + "\"")
-
-    def __activation_function_identity(self, x):
-        return x
 
     def __activation_function(self, layer_index, prime=False):
         aflength = len(self.activation_functions)
@@ -30,22 +42,12 @@ class NeuralNetwork:
             activation_function = self.activation_functions[0]
         func = None
         if activation_function == "identity":
-            func = self.__activation_function_identity
-        elif activation_function == "relu":
+            func = Math.identity
+        else:
             if not prime:
-                func = Math.relu
+                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
             else:
-                func = Math.relu_p
-        elif activation_function == "leaky-relu":
-            if not prime:
-                func = Math.leaky_relu
-            else:
-                func = Math.leaky_relu_p
-        elif activation_function == "sigmoid":
-            if not prime:
-                func = Math.sigmoid
-            else:
-                func = Math.sigmoid_p
+                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
         return func
 
     def __apply_activation_function(self, vector, layer_index, prime=False):
@@ -116,8 +118,6 @@ class NeuralNetwork:
                 dcost_dw = Math.multiply_across(Math.multiply_combinations(da_dz, dz_dw), dcost_dla)
                 c_layer.weights = c_layer.weights - dcost_dw * learning_rate
                 # Adjust biases
-                print(da_dz)
-                print(dcost_dla)
                 dcost_db = np.multiply(da_dz, dcost_dla)
                 c_layer.biases = c_layer.biases - dcost_db * learning_rate
                 # Calculate the derivative of the cost function with respect to the activations of the last layer
@@ -130,7 +130,7 @@ class NeuralNetwork:
         pass
 
 class LGNeuralNetwork(NeuralNetwork):
-    def __init__(self, layers, activation_function="relu"):
+    def __init__(self, layers, activation_function=("relu", "sigmoid")):
         if len(layers) < 2:
             raise self.InitializationException("A feedforward neural network has to have at least 2 layers")
         generated_layers = []
