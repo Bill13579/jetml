@@ -1,4 +1,4 @@
-import numpy as np
+import jetm as jm
 import jetml.math as Math
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
 
@@ -106,22 +106,23 @@ class NeuralNetwork:
             expected = data[i][1]
             diff = pred - expected
             dcost_dpred = 2 * diff
+            diff * 2
             dcost_dla = dcost_dpred
             for j in range(total_layers-1, 0, -1):
                 z = z_record[j]
                 c_layer = self.layers[j]
                 # Calculate some partial derivatives
                 da_dz = self.__apply_activation_function(z, j, True)
-                dz_dla = c_layer.weights.transpose()
+                dz_dla = jm.matrix.transpose(c_layer.weights)
                 dz_dw = activations_record[j-1]
                 # Adjust weights
                 dcost_dw = Math.multiply_across(Math.multiply_combinations(da_dz, dz_dw), dcost_dla)
                 c_layer.weights = c_layer.weights - dcost_dw * learning_rate
                 # Adjust biases
-                dcost_db = np.multiply(da_dz, dcost_dla)
+                dcost_db = jm.matrix.entrywise(da_dz, dcost_dla)
                 c_layer.biases = c_layer.biases - dcost_db * learning_rate
                 # Calculate the derivative of the cost function with respect to the activations of the last layer
-                dcost_dla = dz_dla * np.multiply(da_dz, dcost_dla)
+                dcost_dla = dz_dla * jm.matrix.entrywise(da_dz, dcost_dla)
 
     class RemovalFailedException(Exception):
         pass

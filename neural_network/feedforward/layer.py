@@ -1,4 +1,4 @@
-import numpy as np
+import jetm as jm
 
 class Layer:
     def __init__(self, dimensionality, last_layer_dimensionality=None, weights=None, biases=None, no_biases=False):
@@ -7,14 +7,14 @@ class Layer:
             self.weights = weights
         else:
             if last_layer_dimensionality is not None:
-                self.weights = np.matrix(np.random.randn(self.dimensionality, last_layer_dimensionality))
+                self.weights = jm.random.rand(self.dimensionality, last_layer_dimensionality)
             else:
                 self.weights = None
         if biases is not None:
             self.biases = biases
         else:
             if not no_biases:
-                self.biases = np.matrix(np.random.randn(self.dimensionality, 1))
+                self.biases = jm.random.rand(self.dimensionality, 1)
             else:
                 self.biases = None
     
