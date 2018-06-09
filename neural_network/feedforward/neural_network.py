@@ -5,16 +5,16 @@ from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, Outp
 class NeuralNetwork:
     ACTIVATION_FUNCTIONS = {
         "relu": {
-            "_": Math.relu,
-            "derivative": Math.relu_p
+            "_": jm.relu,
+            "derivative": jm.relu_p
         },
         "leaky-relu": {
-            "_": Math.leaky_relu,
-            "derivative": Math.leaky_relu_p
+            "_": jm.leaky_relu,
+            "derivative": jm.leaky_relu_p
         },
         "sigmoid": {
-            "_": Math.sigmoid,
-            "derivative": Math.sigmoid_p
+            "_": jm.sigmoid,
+            "derivative": jm.sigmoid_p
         }
     }
 
@@ -42,7 +42,7 @@ class NeuralNetwork:
             activation_function = self.activation_functions[0]
         func = None
         if activation_function == "identity":
-            func = Math.identity
+            func = jm.identity
         else:
             if not prime:
                 func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
@@ -106,7 +106,6 @@ class NeuralNetwork:
             expected = data[i][1]
             diff = pred - expected
             dcost_dpred = 2 * diff
-            diff * 2
             dcost_dla = dcost_dpred
             for j in range(total_layers-1, 0, -1):
                 z = z_record[j]
