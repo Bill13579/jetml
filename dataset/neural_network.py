@@ -4,7 +4,6 @@ class IODataset:
     def __init__(self, dataset=[], label=None):
         self.dataset = dataset
         self.label = label
-        self.label = [["X", "Y"], ["Result"]]
     
     def __str__(self):
         string = ""
