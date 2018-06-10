@@ -41,10 +41,13 @@ class NeuralNetwork:
         elif aflength == 1:
             activation_function = self.activation_functions[0]
         func = None
-        if not prime:
-            func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
+        if activation_function == "identity":
+            func = jm.identity
         else:
-            func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
+            if not prime:
+                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
+            else:
+                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
         return func
 
     def __apply_activation_function(self, vector, layer_index, prime=False):
