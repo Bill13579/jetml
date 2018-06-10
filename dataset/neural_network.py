@@ -11,8 +11,8 @@ class IODataset:
         label = None
         if self.label is not None:
             label = [[l for block in self.label for l in block]]
-            input_labels = label[0][:len(self.dataset[0][0])]
-            output_labels = label[0][len(self.dataset[0][0]):]
+            input_labels = self.label[0]
+            output_labels = self.label[1]
             string += "Input: " + ", ".join(input_labels) + "\n"
             string += "Output: " + ", ".join(output_labels) + "\n"
         data = [[tmp[0] for c in td for tmp in c.tolist()] for td in self.dataset]
