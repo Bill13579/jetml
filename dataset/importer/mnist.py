@@ -15,8 +15,6 @@ def read(imagesfile, labelsfile):
     rows = unpack('>I', rows)[0]
     cols = images.read(4)
     cols = unpack('>I', cols)[0]
-    print(rows)
-    print(cols)
 
     labels.read(4)
     number_of_labels = labels.read(4)
@@ -26,7 +24,7 @@ def read(imagesfile, labelsfile):
         raise Exception("The number of images does not equal the number of labels")
     
     dataset = IODataset()
-    dataset_labels = [[], ["Number"]]
+    dataset_labels = [[], ["is 0", "is 1", "is 2", "is 3", "is 4", "is 5", "is 6", "is 7", "is 8", "is 9"]]
     for row in range(rows):
         for col in range(cols):
             dataset_labels[0].append("Pixel " + str(row) + "," + str(col))
@@ -40,7 +38,9 @@ def read(imagesfile, labelsfile):
                 pixels.append(pixel)
         label = labels.read(1)
         label = unpack(">B", label)[0]
-        dataset.add(array_to_vector(pixels), array_to_vector([label]))
+        output_l = [0] * 10
+        output_l[label] = 1
+        dataset.add(array_to_vector(pixels), array_to_vector(output_l))
     
     return dataset
 
