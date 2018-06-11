@@ -44,9 +44,21 @@ class IODataset:
         for s in io_sets:
             self.dataset.append(s)
     
+    def to_batches(self, batch_size):
+        batches = []
+        if len(self.dataset) < batch_size:
+            raise IODataset.DataDeficientException("Not enough data for batches with size " + str(batch_size))
+        for i in range(0, len(self.dataset), batch_size):
+            batches.append(IODataset(self.dataset[i:i+batch_size], self.label))
+        return batches
+
     @staticmethod
     def from_array(array):
         dataset = []
         for data in array:
             dataset.append((array_to_vector(data[0]), array_to_vector(data[1])))
         return IODataset(dataset)
+
+    class DataDeficientException(Exception):
+        pass
+
