@@ -23,7 +23,8 @@ class IODataset:
             line_number = -1
             both = label + data
         both_unwrapped = [i for d in both for i in d]
-        alignment = len(max(both_unwrapped))+2
+        both_unwrapped_len = [len(i) for i in both_unwrapped]
+        alignment = max(both_unwrapped_len)+2
         for l in range(len(both)):
             line = both[l]
             row ="{{:{}}}".format(alignment) * len(line[:])
