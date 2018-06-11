@@ -73,3 +73,4 @@ class Backpropagation:
                 c_layer.biases = c_layer.biases - dcost_db * self.learning_rate
                 # Calculate the derivative of the cost function with respect to the activations of the last layer
                 dcost_dla = dz_dla * jm.matrix.entrywise(da_dz, dcost_dla)
+
