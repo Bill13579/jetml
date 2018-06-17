@@ -1,6 +1,11 @@
 import jetm as jm
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
 
+class NeuralNetworkConfig:
+    def __init__(self, layers, activation_functions=("relu", "sigmoid")):
+        self.layers = layers
+        self.activation_functions = activation_functions
+
 class NeuralNetwork:
     ACTIVATION_FUNCTIONS = {
         "relu": {
@@ -103,7 +108,7 @@ class NeuralNetwork:
         f = open(path, "wb")
         f.write(nn_str.encode('ascii'))
         f.close()
-    
+
     @staticmethod
     def from_file(path):
         try:
@@ -194,4 +199,8 @@ class LGNeuralNetwork(NeuralNetwork):
                 generated_layers.append(HiddenLayer(layers[l], layers[l-1]))
         generated_layers.append(OutputLayer(layers[-1], layers[-2]))
         super().__init__(generated_layers, activation_function)
+    
+    @staticmethod
+    def from_config(config):
+        return LGNeuralNetwork(config.layers, config.activation_functions)
 
