@@ -1,5 +1,6 @@
 import jetm as jm
 import jetml.math as Math
+import jetml.vars as Vars
 from jetml.neural_network.feedforward import NeuralNetwork
 
 class Backpropagation:
@@ -21,9 +22,9 @@ class Backpropagation:
             func = jm.identity
         else:
             if not prime:
-                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
+                func = Vars.ACTIVATION_FUNCTIONS[activation_function]["_"]
             else:
-                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
+                func = Vars.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
         return func
 
     def __apply_activation_function(self, vector, layer_index, prime=False):

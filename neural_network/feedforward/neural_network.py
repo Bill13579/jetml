@@ -1,4 +1,5 @@
 import jetm as jm
+import jetml.vars as Vars
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
 
 class NeuralNetworkConfig:
@@ -7,21 +8,6 @@ class NeuralNetworkConfig:
         self.activation_functions = activation_functions
 
 class NeuralNetwork:
-    ACTIVATION_FUNCTIONS = {
-        "relu": {
-            "_": jm.relu,
-            "derivative": jm.relu_p
-        },
-        "leaky-relu": {
-            "_": jm.leaky_relu,
-            "derivative": jm.leaky_relu_p
-        },
-        "sigmoid": {
-            "_": jm.sigmoid,
-            "derivative": jm.sigmoid_p
-        }
-    }
-
     def __init__(self, layers, activation_functions=("relu", "sigmoid")):
         if len(layers) < 2:
             raise self.InitializationException("A feedforward neural network has to have at least 2 layers")
@@ -32,7 +18,7 @@ class NeuralNetwork:
     def __verify_activation_function(self, activation_functions):
         for i in range(len(activation_functions)):
             af = activation_functions[i]
-            if af not in NeuralNetwork.ACTIVATION_FUNCTIONS.keys() and af != "identity":
+            if af not in Vars.ACTIVATION_FUNCTIONS.keys() and af != "identity":
                 raise Exception("Unknown activation function \"" + af + "\"")
 
     def __activation_function(self, layer_index, prime=False):
@@ -49,9 +35,9 @@ class NeuralNetwork:
             func = jm.identity
         else:
             if not prime:
-                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["_"]
+                func = Vars.ACTIVATION_FUNCTIONS[activation_function]["_"]
             else:
-                func = NeuralNetwork.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
+                func = Vars.ACTIVATION_FUNCTIONS[activation_function]["derivative"]
         return func
 
     def __apply_activation_function(self, vector, layer_index, prime=False):
