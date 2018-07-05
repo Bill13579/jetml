@@ -1,4 +1,4 @@
-import jetm as jm
+import jetmath as jm
 import jetml.vars as Vars
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
 
@@ -88,7 +88,7 @@ class NeuralNetwork:
                 weights_mat_rows.append("n".join(str(w) for w in r))
             layer_str += "N".join(weights_mat_rows)
             layer_str += "b"
-            biases = jm.matrix.transpose(l.biases).tolist()
+            biases = jm.matrix.matrix.transpose(l.biases).tolist()
             layer_str += "N".join(str(b) for b in biases[0])
             nn_str += layer_str
         f = open(path, "wb")
@@ -119,7 +119,7 @@ class NeuralNetwork:
                         c_layer = False
                     elif c_layer:
                         tmp_layer_biases[-1].append(float(tmp))
-                        layers.append(HiddenLayer(tmp_layer_dimensionality, layers[-1].dimensionality, jm.matrix(tmp_layer_weights), jm.matrix(tmp_layer_biases)))
+                        layers.append(HiddenLayer(tmp_layer_dimensionality, layers[-1].dimensionality, jm.matrix.matrix(tmp_layer_weights), jm.matrix.matrix(tmp_layer_biases)))
                         tmp_layer_dimensionality = None
                         tmp_layer_weights = None
                         tmp_layer_biases = None

@@ -1,4 +1,4 @@
-import jetm as jm
+import jetmath as jm
 
 def multiply_combinations(x, y):
     matrix = []
@@ -6,7 +6,7 @@ def multiply_combinations(x, y):
         matrix.append([])
         for j in range(y.shape[0]):
             matrix[i].append(x[i, 0] * y[j, 0])
-    return jm.matrix(matrix)
+    return jm.matrix.matrix(matrix)
 
 def multiply_across(m, v):
     if m.shape[0] != v.shape[0]:
@@ -16,5 +16,5 @@ def multiply_across(m, v):
         matrix.append([])
         for j in range(m.shape[1]):
             matrix[i].append(m[i, j] * v[i, 0])
-    return jm.matrix(matrix)
+    return jm.matrix.matrix(matrix)
 

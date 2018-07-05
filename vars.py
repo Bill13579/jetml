@@ -1,17 +1,17 @@
-import jetm as jm
+import jetmath as jm
 
 ACTIVATION_FUNCTIONS = {
     "relu": {
-        "_": jm.relu,
-        "derivative": jm.relu_p
+        "_": jm.nonlin.relu,
+        "derivative": jm.nonlin.relu_p
     },
     "leaky-relu": {
-        "_": jm.leaky_relu,
-        "derivative": jm.leaky_relu_p
+        "_": jm.nonlin.leaky_relu,
+        "derivative": jm.nonlin.leaky_relu_p
     },
     "sigmoid": {
-        "_": jm.sigmoid,
-        "derivative": jm.sigmoid_p
+        "_": jm.nonlin.sigmoid,
+        "derivative": jm.nonlin.sigmoid_p
     }
 }
 

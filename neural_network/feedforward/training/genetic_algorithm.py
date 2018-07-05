@@ -1,7 +1,7 @@
 from array import array as _
 from jetml.neural_network.feedforward import NeuralNetwork, LGNeuralNetwork, InputLayer, HiddenLayer
-from jetm.random import choice, randd, randrun
-from jetm.matrix import matrix
+from jetmath.random import choice, randd, randrun
+from jetmath.matrix import matrix
 
 class NNGeneticAlgorithm:
     def __init__(self, neural_network_config, mutation_rate, max_population, get_fitness):

@@ -1,4 +1,4 @@
-import jetm as jm
+import jetmath as jm
 import jetml.math as Math
 import jetml.vars as Vars
 from jetml.neural_network.feedforward import NeuralNetwork
@@ -64,16 +64,16 @@ class Backpropagation:
                 c_layer = self.nn.layers[j]
                 # Calculate some partial derivatives
                 da_dz = self.__apply_activation_function(z, j, True)
-                dz_dla = jm.matrix.transpose(c_layer.weights)
+                dz_dla = jm.matrix.matrix.transpose(c_layer.weights)
                 dz_dw = activations_record[j-1]
                 # Adjust weights
                 dcost_dw = Math.multiply_across(Math.multiply_combinations(da_dz, dz_dw), dcost_dla)
                 c_layer.weights = c_layer.weights - dcost_dw * self.learning_rate
                 # Adjust biases
-                dcost_db = jm.matrix.entrywise(da_dz, dcost_dla)
+                dcost_db = jm.matrix.matrix.entrywise(da_dz, dcost_dla)
                 c_layer.biases = c_layer.biases - dcost_db * self.learning_rate
                 # Calculate the derivative of the cost function with respect to the activations of the last layer
-                dcost_dla = dz_dla * jm.matrix.entrywise(da_dz, dcost_dla)
+                dcost_dla = dz_dla * jm.matrix.matrix.entrywise(da_dz, dcost_dla)
     
     def batch(self, training_data):
         total_layers = len(self.nn.layers)
@@ -91,7 +91,7 @@ class Backpropagation:
                 c_layer = self.nn.layers[j]
                 # Calculate some partial derivatives
                 da_dz = self.__apply_activation_function(z, j, True)
-                dz_dla = jm.matrix.transpose(c_layer.weights)
+                dz_dla = jm.matrix.matrix.transpose(c_layer.weights)
                 dz_dw = activations_record[j-1]
                 # Add derivatives of weights to delta_weights
                 dcost_dw = Math.multiply_across(Math.multiply_combinations(da_dz, dz_dw), dcost_dla)
@@ -100,13 +100,13 @@ class Backpropagation:
                 else:
                     delta_weights[j] += dcost_dw
                 # Add derivatives of biases to delta_biases
-                dcost_db = jm.matrix.entrywise(da_dz, dcost_dla)
+                dcost_db = jm.matrix.matrix.entrywise(da_dz, dcost_dla)
                 if j not in delta_biases.keys():
                     delta_biases[j] = dcost_db
                 else:
                     delta_biases[j] += dcost_db
                 # Calculate the derivative of the cost function with respect to the activations of the last layer
-                dcost_dla = dz_dla * jm.matrix.entrywise(da_dz, dcost_dla)
+                dcost_dla = dz_dla * jm.matrix.matrix.entrywise(da_dz, dcost_dla)
         for j in range(total_layers-1, 0, -1):
             avg_func = lambda o : o / len(data)
             l_delta_weights = delta_weights[j]

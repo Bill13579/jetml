@@ -1,4 +1,4 @@
-import jetm as jm
+import jetmath as jm
 
 class Layer:
     def __init__(self, dimensionality, last_layer_dimensionality=None, weights=None, biases=None, no_biases=False):
