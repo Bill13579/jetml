@@ -1,6 +1,6 @@
 import jetmath as jm
 import jetml.vars as Vars
-from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
+from jetml.neural_network.feedforward.layers import InputLayer, HiddenLayer, OutputLayer
 
 class NeuralNetwork:
     def __init__(self, layers, activation_functions=("relu", "sigmoid")):
