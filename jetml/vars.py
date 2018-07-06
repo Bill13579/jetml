@@ -15,3 +15,18 @@ ACTIVATION_FUNCTIONS = {
     }
 }
 
+NEAT_WEIGHTS_MUTATION_FUNCTIONS = {
+    "replace": {
+        "_": lambda x : jm.random.randd(),
+        "use": 0.10
+    },
+    "add-random": {
+        "_": lambda x : x + jm.random.uniform(0, 0.2),
+        "use": 0.45
+    },
+    "subtract-random": {
+        "_": lambda x : x - jm.random.uniform(0, 0.2),
+        "use": 0.45
+    }
+}
+
