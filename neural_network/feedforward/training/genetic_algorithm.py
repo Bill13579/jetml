@@ -1,5 +1,6 @@
 from array import array as _
-from jetml.neural_network.feedforward import NeuralNetwork, LGNeuralNetwork, InputLayer, HiddenLayer, OutputLayer
+from jetml.neural_network.feedforward import NeuralNetwork, LGNeuralNetwork
+from jetml.neural_network.feedforward.layers import InputLayer, HiddenLayer, OutputLayer
 from jetmath.random import choice, randd, randrun
 from jetmath.matrix import matrix
 
