@@ -2,11 +2,6 @@ import jetmath as jm
 import jetml.vars as Vars
 from jetml.neural_network.feedforward.layer import InputLayer, HiddenLayer, OutputLayer
 
-class NeuralNetworkConfig:
-    def __init__(self, layers, activation_functions=("relu", "sigmoid")):
-        self.layers = layers
-        self.activation_functions = activation_functions
-
 class NeuralNetwork:
     def __init__(self, layers, activation_functions=("relu", "sigmoid")):
         if len(layers) < 2:
@@ -71,6 +66,9 @@ class NeuralNetwork:
             z = weights * activations + biases
             activations = self.__apply_activation_function(z, i)
         return activations
+    
+    def copy(self):
+        return NeuralNetwork([l.copy() for l in self.layers], self.activation_functions)
     
     def save(self, path):
         af = ",".join(self.activation_functions)
@@ -175,7 +173,7 @@ class NeuralNetwork:
         pass
 
 class LGNeuralNetwork(NeuralNetwork):
-    def __init__(self, layers, activation_function=("relu", "sigmoid")):
+    def __init__(self, layers, activation_functions=("relu", "sigmoid")):
         if len(layers) < 2:
             raise self.InitializationException("A feedforward neural network has to have at least 2 layers")
         generated_layers = []
@@ -184,9 +182,5 @@ class LGNeuralNetwork(NeuralNetwork):
             for l in range(1, len(layers)-1):
                 generated_layers.append(HiddenLayer(layers[l], layers[l-1]))
         generated_layers.append(OutputLayer(layers[-1], layers[-2]))
-        super().__init__(generated_layers, activation_function)
-    
-    @staticmethod
-    def from_config(config):
-        return LGNeuralNetwork(config.layers, config.activation_functions)
+        super().__init__(generated_layers, activation_functions)
 

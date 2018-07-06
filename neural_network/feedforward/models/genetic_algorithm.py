@@ -1,36 +1,24 @@
 from array import array as _
-from jetml.neural_network.feedforward import NeuralNetwork, LGNeuralNetwork, InputLayer, HiddenLayer
+from jetml.neural_network.feedforward import NeuralNetwork, LGNeuralNetwork, InputLayer, HiddenLayer, OutputLayer
 from jetmath.random import choice, randd, randrun
 from jetmath.matrix import matrix
 
-class NNGeneticAlgorithm:
-    def __init__(self, neural_network_config, mutation_rate, max_population, get_fitness):
+class GeneticAlgorithm:
+    def __init__(self, layers, mutation_rate, max_population, activation_functions=("relu", "sigmoid")):
         self.population = []
-        self.generations = 0
-        self.neural_network_config = neural_network_config
+        self.top = None
+        self.gen = 0
         self.mutation_rate = mutation_rate
         self.max_population = max_population
         for p in range(max_population):
-            self.population.append(NNGene(LGNeuralNetwork.from_config(self.neural_network_config)))
-        self.__get_fitness = get_fitness
-    
-    def calc_fitness(self):
-        fitness = self.__get_fitness([g.neural_network for g in self.population])
-        for f in range(len(fitness)):
-            self.population[f].fitness = fitness[f]
-    
-    def get_neural_networks(self):
-        nns = []
-        for p in self.population:
-            nns.append(p.neural_network)
-        return nns
-    
+            self.population.append(Gene.from_layer_sizes(layers, activation_functions))
+
     def update_fitness(self, fitness):
         for p in range(len(self.population)):
             self.population[p].fitness = fitness[p]
     
-    def generate_mating_pool(self):
-        self.mating_pool = _("f", [])
+    def __generate_mating_pool(self):
+        self.mating_pool = []
         fitness_array = [p.fitness for p in self.population]
         max_fitness = max(fitness_array)
         for f in range(len(fitness_array)):
@@ -39,8 +27,21 @@ class NNGeneticAlgorithm:
             n = int(round(d * 100))
             for i in range(n):
                 self.mating_pool.append(f)
+    
+    def update_top(self):
+        temp = self.population[0]
+        for i in self.population[1:]:
+            if i.fitness > temp.fitness:
+                temp = i
+        if self.top is None:
+            self.top = temp.copy()
+        else:
+            if temp.fitness > self.top.fitness:
+                self.top = temp.copy()
 
-    def generate_next_population(self):
+    def natural_selection(self):
+        self.update_top()
+        self.__generate_mating_pool()
         new_population = []
         for p in range(self.max_population):
             a = int(choice(self.mating_pool))
@@ -54,21 +55,16 @@ class NNGeneticAlgorithm:
             child.mutate(self.mutation_rate)
             new_population.append(child)
         self.population = new_population
-        self.generations += 1
+        self.gen += 1
 
-    def run_all(self):
-        self.calc_fitness()
-        self.generate_mating_pool()
-        self.generate_next_population()
-
-class NNGene:
-    def __init__(self, neural_network):
+class Gene(NeuralNetwork):
+    def __init__(self, layers, activation_functions=("relu", "sigmoid")):
         self.fitness = 0
-        self.neural_network = neural_network
+        super().__init__(layers, activation_functions)
     
     def mutate(self, mutation_rate):
-        for l in range(1, len(self.neural_network.layers)):
-            layer = self.neural_network.layers[l]
+        for l in range(1, len(self.layers)):
+            layer = self.layers[l]
             for r in range(layer.weights.shape[0]):
                 for c in range(layer.weights.shape[1]):
                     layer.weights[r,c] = randrun(mutation_rate, (lambda: randd()), (lambda: layer.weights[r,c])).return_value
@@ -76,8 +72,8 @@ class NNGene:
                 layer.biases[r,0] = randrun(mutation_rate, (lambda: randd()), (lambda: layer.biases[r,0])).return_value
     
     def uniform_crossover(self, gene):
-        a = self.neural_network
-        b = gene.neural_network
+        a = self
+        b = gene
         new_layers = [InputLayer(a.layers[0].dimensionality)]
         for l in range(1, len(a.layers)):
             a_l = a.layers[l]
@@ -90,5 +86,22 @@ class NNGene:
             for r in range(a_l.biases.shape[0]):
                 new_biases[r,0] = choice((a_l.biases[r,0], b_l.biases[r,0]))
             new_layers.append(HiddenLayer(a.layers[l].dimensionality, new_layers[-1].dimensionality, new_weights, new_biases))
-        return NNGene(NeuralNetwork(new_layers, a.activation_functions))
+        return Gene(new_layers, a.activation_functions)
+    
+    @staticmethod
+    def from_layer_sizes(layers, activation_functions):
+        if len(layers) < 2:
+            raise NeuralNetwork.InitializationException("A feedforward neural network has to have at least 2 layers")
+        generated_layers = []
+        generated_layers.append(InputLayer(layers[0]))
+        if len(layers) > 2:
+            for l in range(1, len(layers)-1):
+                generated_layers.append(HiddenLayer(layers[l], layers[l-1]))
+        generated_layers.append(OutputLayer(layers[-1], layers[-2]))
+        return Gene(generated_layers, activation_functions)
+    
+    def copy(self):
+        new = Gene([l.copy() for l in self.layers], self.activation_functions)
+        new.fitness = self.fitness
+        return new
 

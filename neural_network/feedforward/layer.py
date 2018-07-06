@@ -3,6 +3,8 @@ import jetmath as jm
 class Layer:
     def __init__(self, dimensionality, last_layer_dimensionality=None, weights=None, biases=None, no_biases=False):
         self.dimensionality = dimensionality
+        self.__last_layer_dimensionality = last_layer_dimensionality
+        self.__no_biases = no_biases
         if weights is not None:
             self.weights = weights
         else:
@@ -18,6 +20,9 @@ class Layer:
             else:
                 self.biases = None
     
+    def copy(self):
+        return Layer(self.dimensionality, self.__last_layer_dimensionality, weights=self.weights, biases=self.biases, no_biases=self.__no_biases)
+
     class InitializationException(Exception):
         pass
 
