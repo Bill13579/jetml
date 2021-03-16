@@ -6,7 +6,7 @@ with open("README_PYPI.md", "r") as rm:
 setuptools.setup(
     name="jetml",
     version="0.1",
-    author="Bill Kudo",
+    author="BillK",
     author_email="bluesky42624@gmail.com",
     description="A powerful & extensive machine learning library focused on readability and completeness",
     long_description=long_description,
